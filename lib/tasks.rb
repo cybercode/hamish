@@ -8,14 +8,14 @@ Dir.glob('./lib/*.rb') do |f|
   require f
 end
 
-def html_with_layout files, destdir, cachedir
+def html_with_layout files, destdir, cachedir, options={ }
   task :html => SITE
   task clean_task_for(:html) => 
     dest_files_for(files, SITE, 'html').existing
 
   desc 'Generate html with templates ([force] will regenerate all files)'
   task :html, :force, :needs => files do |t, args|
-    site=Site.new(load_yaml(files, destdir))
+    site=Site.new(load_yaml(files, destdir), options)
     force = args.force||!check_menu(site, cachedir)
     if force
       STDERR.puts "Generating menu"
@@ -26,8 +26,15 @@ def html_with_layout files, destdir, cachedir
     site.render :force => force
   end
 end
-def clean destdir
 
+def deploy server
+ desc "Rsync to #{server}"
+  task :deploy do
+    sh "rsync -avz output/site/ #{server}"
+  end
+end
+
+def clean destdir
   desc 'Remove all output file'
   task :clean
 
