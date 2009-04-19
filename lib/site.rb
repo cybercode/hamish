@@ -5,10 +5,10 @@ class Site
   attr_reader :pages
   attr_reader :menu
   
-  def initialize pages, home = 'index', layout_dir = 'layout'
+  def initialize pages, options={ }
     @pages = pages
-    @home = home
-    @layout_dir = layout_dir
+    @home = options[:home]||'index'
+    @layout_dir = options[:layout]||'layout'
     @layouts = { }
     build_menu
   end
