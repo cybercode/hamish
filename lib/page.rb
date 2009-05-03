@@ -15,8 +15,8 @@ class Page
     @name, type = basename file
     begin
       @content, @attributes = send(type, file)
-    rescue NoMethodError
-      raise "Unknown  type #{type} for #{file}"
+    #rescue NoMethodError
+      #raise "Unknown  type #{type} for #{file}"
     end
   end
 
