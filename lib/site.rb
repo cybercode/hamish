@@ -9,7 +9,7 @@ class Site
     @pages = pages
     @home = options[:home]||'index'
     @layout_dir = options[:layout]||'layout'
-    @layouts = { }
+    @layouts = { 'none'=>{:file=>__FILE__, :data=>'=yield'} }
     build_menu
   end
 

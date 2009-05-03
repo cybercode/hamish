@@ -30,7 +30,7 @@ end
 def deploy server
  desc "Rsync to #{server}"
   task :deploy do
-    sh "rsync -avz output/site/ #{server}"
+    sh "rsync -avz --exclude=.DS_Store output/site/ #{server}"
   end
 end
 
