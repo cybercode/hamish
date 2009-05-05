@@ -46,7 +46,7 @@ end
 
 def copy task, srcpat, destdir
   task_init task, destdir, "Copy #{task.to_s} files to #{destdir}", 
-  :dependent => true
+  :dependent_of => :copy
   
   srclist = FileList[srcpat]
   srclist.zip(dest_files_for srclist, destdir).each do |src, dest|
@@ -85,7 +85,7 @@ def task_init task, destdir, desc, options={ }
   directory destdir
   desc desc
   task task => destdir
-  task(:default => task) if options[:dependent]
+  task(options[:dependent_of] => task) if options[:dependent_of]
 
   clean_task_for task
 end
