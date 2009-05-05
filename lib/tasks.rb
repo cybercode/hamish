@@ -8,22 +8,15 @@ Dir.glob('./lib/*.rb') do |f|
   require f
 end
 
-def html_with_layout files, destdir, cachedir, options={ }
+def html_with_layout files, destdir, options={ }
   task :html => SITE
   task clean_task_for(:html) => 
     dest_files_for(files, SITE, 'html').existing
 
   desc 'Generate html with templates ([force] will regenerate all files)'
   task :html, :force, :needs => files do |t, args|
-    site=Site.new(load_yaml(files, destdir), options)
-    force = args.force||!check_menu(site, cachedir)
-    if force
-      STDERR.puts "Generating menu"
-      File.open(File.join(CACHE, '_menu.yaml'), 'w') do |out|
-        out.write YAML.dump(site.menu)
-      end
-    end
-    site.render :force => force
+    site=Site.new(load(files, destdir), options)
+    site.render :force => update_menu(site, options[:cache], args.force)
   end
 end
 
@@ -107,20 +100,30 @@ def clean_task_for task
   return clean_task
 end
 
-def check_menu site, cachedir
+#return true if menu updated or not cached
+def update_menu site, cachedir, force_write
+  return true unless cachedir
+  
+  file=File.join(cachedir, '_menu.yaml')
   begin
-    current = YAML::load(File.read(File.join(cachedir, '_menu.yaml')))
+    current = YAML::load(File.read(file))
   rescue Errno::ENOENT
-    return false
+    force_write=true
   end
-  new = site.menu
-  return current == new 
+  if force_write
+    STDERR.puts "Generating menu"
+    File.open(File.join(cachedir, '_menu.yaml'), 'w') do |out|
+      out.write YAML.dump(site.menu)
+    end
+    return true
+  end
+  return current != site.menu
 end
 
-def load_yaml files, destination
+def load files, destination
   pages = { }
   files.each do |f| 
-    p = YAML::load(File.read f)
+    p = Page.new(f)
     p.destination = File.join(destination, p.name + '.html') 
     p.attributes[:file] = f
     pages[p.name] = p

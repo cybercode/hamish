@@ -4,7 +4,6 @@ require 'fileutils'
 require File.dirname(__FILE__) + '/helpers.rb'
 
 class Page
-  attr_reader :content
   attr_reader :attributes
   attr_reader :name
   attr_reader :source
@@ -14,10 +13,14 @@ class Page
     @source = file
     @name, type = basename file
     begin
-      @content, @attributes = send(type, file)
+      @attributes = send(type, File.read(file))
     #rescue NoMethodError
       #raise "Unknown  type #{type} for #{file}"
     end
+  end
+
+  def to_yaml
+    YAML.dump(attributes)
   end
 
   def method_missing(meth, *args)
@@ -29,24 +32,29 @@ class Page
   end
   
   private
-  def markdown file
-    engine = Maruku.new(File.read(file))
+  def markdown string
+    engine = Maruku.new(string)
+    attributes = engine.attributes
+    attributes[:content]=engine.to_html
 
-    return engine.to_html, engine.attributes
+    return attributes
   end
 
-  def haml file
-    engine=Haml::Engine.new(File.read(file))
+  def haml string
+    engine=Haml::Engine.new(string)
     helper = Helpers.new
-    content = engine.render(helper)
+    attributes={ :content => engine.render(helper) }
 
-    attributes={ }
     helper.instance_variables.each do |v|
       next if v =~ /^@(_|haml)/
       sym = v.to_s[1..-1].intern
       attributes[sym] = helper.instance_variable_get(v)
     end
-    return content, attributes
+    return attributes
+  end
+
+  def yaml string
+    return YAML.load(string)
   end
 
   def basename file
