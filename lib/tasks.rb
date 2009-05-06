@@ -1,6 +1,3 @@
-require 'haml'
-require 'sass'
-require 'maruku'
 %w[site page].each do |f| 
   require File.join(File.dirname(__FILE__), f)
 end
@@ -9,9 +6,9 @@ Dir.glob('./lib/*.rb') do |f|
 end
 
 def html_with_layout files, destdir, options={ }
-  task :html => SITE
+  task :html => destdir
   task clean_task_for(:html) => 
-    dest_files_for(files, SITE, 'html').existing
+    dest_files_for(files, destdir, 'html').existing
 
   desc 'Generate html with templates ([force] will regenerate all files)'
   task :html, :force, :needs => files do |t, args|
@@ -20,10 +17,10 @@ def html_with_layout files, destdir, options={ }
   end
 end
 
-def deploy server
+def deploy site, server
  desc "Rsync to #{server}"
   task :deploy do
-    sh "rsync -avz --exclude=.DS_Store output/site/ #{server}"
+    sh "rsync -avz --exclude=.DS_Store #{site} #{server}"
   end
 end
 

@@ -12,11 +12,7 @@ class Page
   def initialize file
     @source = file
     @name, type = basename file
-    begin
-      @attributes = send(type, File.read(file))
-    #rescue NoMethodError
-      #raise "Unknown  type #{type} for #{file}"
-    end
+    @attributes = send(type, File.read(file))
   end
 
   def to_yaml
