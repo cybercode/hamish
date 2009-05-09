@@ -19,8 +19,8 @@ end
 
 def deploy site, server
  desc "Rsync to #{server}"
-  task :deploy do
-    sh "rsync -avz --exclude=.DS_Store #{site} #{server}"
+  task :deploy, [:rsync_args] => :default do |t, args|
+    sh "rsync -avz #{args.rsync_args} --exclude=.DS_Store #{site}/ #{server}"
   end
 end
 

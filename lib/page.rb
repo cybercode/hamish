@@ -29,6 +29,10 @@ class Page
   
   private
   def markdown string
+    string.gsub!(/\{\{\{([^}]+)\}\}\}/) do |v|
+      args = $1.split(/ +/)
+      send(args[0].to_sym, *args[1..-1])
+    end
     engine = Maruku.new(string)
     attributes = engine.attributes
     attributes[:content]=engine.to_html
@@ -59,4 +63,13 @@ class Page
 
     return [base, ext[1..-1]]
   end
+  
+  def include partial, div_class=nil
+    data=File.read(File.join(
+        File.dirname(source), '_' + partial + File.extname(source)
+        ))
+    return data unless div_class
+    return "+--- {.#{div_class}}\n#{data}\n=---"
+  end
+
 end
