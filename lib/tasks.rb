@@ -107,14 +107,14 @@ def update_menu site, cachedir, force_write
   rescue Errno::ENOENT
     force_write=true
   end
-  if force_write
+  if force_write || current != site.menu
     STDERR.puts "Generating menu"
     File.open(File.join(cachedir, '_menu.yaml'), 'w') do |out|
       out.write YAML.dump(site.menu)
     end
     return true
   end
-  return current != site.menu
+  return false
 end
 
 def load files, destination
