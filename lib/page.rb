@@ -9,10 +9,11 @@ class Page
   attr_reader :source
   attr_accessor :destination
   
-  def initialize file
+  def initialize file, attrs = { }
     @source = file
     @name, type = basename file
-    @attributes = send(type, File.read(file))
+    @attributes=attrs
+    @attributes.merge!(send(type, File.read(file)))
   end
 
   def to_yaml
