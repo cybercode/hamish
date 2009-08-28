@@ -43,7 +43,8 @@ class Page
 
   def haml string
     engine=Haml::Engine.new(string)
-    helper = Helpers.new
+    helper = Helpers.new(attributes)
+
     attributes={ :content => engine.render(helper) }
 
     helper.instance_variables.each do |v|

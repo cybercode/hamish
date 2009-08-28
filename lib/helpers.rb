@@ -1,4 +1,9 @@
 class Helpers
+  def initialize attrs={ }
+    attrs.each_pair do |k,v|
+      instance_variable_set("@#{k.to_s}",v)
+    end
+  end
   def sidebar_menu
     out = '<ul>'
     @menu.each do |m|
