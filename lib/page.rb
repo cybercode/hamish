@@ -67,8 +67,12 @@ class Page
   end
   
   def include partial, div_class=nil
+    path, base = File.split(partial)
+    base = "_#{base}" if path == '.'
+    
     data=File.read(File.join(
-        File.dirname(source), '_' + partial + File.extname(source)
+        (path =~ %r[^/] ? '' : File.dirname(source)),
+        path, base + File.extname(source)
         ))
     return data unless div_class
     return "+--- {.#{div_class}}\n#{data}\n=---"
