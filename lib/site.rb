@@ -32,7 +32,7 @@ class Site
   end
   
   def self.prompt src, dest
-    STDERR.printf "%-30.30s -> %-30.30s\n", src, dest
+    STDERR.printf "%-30.30s -> %-44.44s\n", src, dest
   end
   
   private
