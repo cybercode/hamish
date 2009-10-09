@@ -12,8 +12,9 @@ class Page
   def initialize file, attrs = { }
     @source = file
     @name, type = basename file
+    @data = File.read(file)
     @attributes=attrs
-    @attributes.merge!(send(type, File.read(file)))
+    @attributes.merge!(send(type, @data))
   end
 
   def to_yaml
