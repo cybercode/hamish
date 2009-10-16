@@ -9,7 +9,7 @@ class Page
   attr_reader :source
   attr_accessor :destination
   
-  def initialize file, attrs = { }
+  def initialize(file, attrs = { })
     @source = file
     @name, type = basename file
     @data = File.read(file)
@@ -30,7 +30,7 @@ class Page
   end
   
   private
-  def markdown string
+  def markdown(string)
     string.gsub!(/\{\{\{([^}]+)\}\}\}/) do |v|
       args = $1.split(/ +/)
       send(args[0].to_sym, *args[1..-1])
@@ -42,7 +42,7 @@ class Page
     return attributes
   end
 
-  def haml string
+  def haml(string)
     engine=Haml::Engine.new(string)
     helper = Helpers.new(attributes)
 
@@ -56,18 +56,18 @@ class Page
     return attributes
   end
 
-  def yaml string
+  def yaml(string)
     return YAML.load(string)
   end
 
-  def basename file
+  def basename(file)
     ext = File.extname(file)
     base = File.basename(file, ext)
 
     return [base, ext[1..-1]]
   end
   
-  def include partial, div_class=nil
+  def include(partial, div_class=nil)
     path, base = File.split(partial)
     base = "_#{base}" if path == '.'
     

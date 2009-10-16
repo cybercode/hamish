@@ -54,7 +54,7 @@ class Site
     @menu
   end
 
-  def render_page page
+  def render_page(page)
     helpers = Helpers.new
     item = menu.select { |i| i[:name] == page.name}[0]
 
@@ -78,12 +78,12 @@ class Site
     end
   end
 
-  def item_or_nil menu, item, value
+  def item_or_nil(menu, item, value)
     return nil unless item && v = item[value]
     menu.select { |i| i[:name] == v }[0]
   end
 
-  def layout_for page
+  def layout_for(page)
     name = page.layout || 'default'
     return @layouts[name] if @layouts[name]
     file = File.join(Dir.pwd, @layout_dir, name + '.haml')

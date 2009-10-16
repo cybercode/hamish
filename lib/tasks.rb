@@ -5,7 +5,7 @@ Dir.glob('./lib/*.rb') do |f|
   require f
 end
 
-def html_with_layout files, destdir, options={ }
+def html_with_layout(files, destdir, options={ })
   task :html => destdir
   task clean_task_for(:html) => 
     dest_files_for(files, destdir, 'html').existing
@@ -17,14 +17,14 @@ def html_with_layout files, destdir, options={ }
   end
 end
 
-def deploy site, server
+def deploy(site, server)
  desc "Rsync to #{server}"
   task :deploy, [:rsync_args] => :default do |t, args|
     sh "rsync -avz #{args.rsync_args} --exclude=.DS_Store #{site}/ #{server}"
   end
 end
 
-def clean destdir
+def clean(destdir)
   desc 'Remove all output file'
   task :clean
 
@@ -34,7 +34,7 @@ def clean destdir
   end
 end
 
-def copy task, srcpat, destdir
+def copy(task, srcpat, destdir)
   task_init task, destdir, "Copy #{task.to_s} files to #{destdir}", 
   :dependent_of => :copy
   
@@ -46,7 +46,7 @@ def copy task, srcpat, destdir
   end
 end
 
-def transform task, srcpat, destdir, options={ }, &block
+def transform(task, srcpat, destdir, options={ }, &block)
   ext = task.to_s
   task_init task, destdir, "Generate #{ext}", options
     
@@ -66,12 +66,12 @@ def transform task, srcpat, destdir, options={ }, &block
   return destlist
 end
 
-def add_dependent task, dep
+def add_dependent(task, dep)
   task task => dep
   task(clean_name_for(task) => dep) if File.exist? dep
 end
 
-def task_init task, destdir, desc, options={ }
+def task_init(task, destdir, desc, options={ })
   directory destdir
   desc desc
   task task => destdir
@@ -80,11 +80,11 @@ def task_init task, destdir, desc, options={ }
   clean_task_for task
 end
 
-def clean_name_for task
+def clean_name_for(task)
   "clean_#{task.to_s}".to_sym
 end
 
-def clean_task_for task
+def clean_task_for(task)
   clean_task = clean_name_for task
   
   desc "Remove generated #{task.to_sym} files"
@@ -98,7 +98,7 @@ def clean_task_for task
 end
 
 #return true if menu updated or not cached
-def update_menu site, cachedir, force_write
+def update_menu(site, cachedir, force_write)
   return true unless cachedir
   
   file=File.join(cachedir, '_menu.yaml')
@@ -117,7 +117,7 @@ def update_menu site, cachedir, force_write
   return false
 end
 
-def load files, destination
+def load(files, destination)
   pages = { }
   files.each do |f| 
     p = Page.new(f)
@@ -128,7 +128,7 @@ def load files, destination
   return pages
 end
 
-def dest_files_for files, destination, ext=nil
+def dest_files_for(files, destination, ext=nil)
   pat="%{.*,#{destination}}p%s"
   pat << (ext ? "%n.#{ext}" : '%f')
   

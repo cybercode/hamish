@@ -1,5 +1,5 @@
 class Helpers
-  def initialize attrs={ }
+  def initialize(attrs={ })
     attrs.each_pair do |k,v|
       instance_variable_set("@#{k.to_s}",v)
     end
@@ -31,15 +31,15 @@ class Helpers
     out
   end
 
-  def rel_link type, page
+  def rel_link(type, page)
     "<link rel='#{type}' href='#{page[:name]}.html' title='#{page[:title]}'/>"
   end
 
-  def span klass, text
+  def span(klass, text)
     "<span class='#{klass}'>#{text}</span>"
   end
   
-  def page_link p, text=nil
+  def page_link(p, text=nil)
     "<a href='%s.html'>%s</a>" % [p[:name], text || p[:title]]
   end
 end
