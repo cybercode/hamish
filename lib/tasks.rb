@@ -19,12 +19,13 @@ end
 
 def deploy(site, server)
  desc "Rsync to #{server}"
-  task :deploy, [:rsync_args] => [:default, :sitemap] do |t, args|
+  task :deploy, [:rsync_args] => :default do |t, args|
     sh "rsync -avz #{args.rsync_args} --exclude=.DS_Store #{site}/ #{server}"
   end
 end
 
 def sitemap(site, domain)
+  task :deploy => :sitemap
   desc "Create sitemap.txt for files in #{site}, w/ prefix #{domain}"
   task :sitemap => [:html, :copy] do
     File.open(File.join(site, 'sitemap.txt'), 'w') do |f|
