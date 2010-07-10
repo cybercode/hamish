@@ -1,3 +1,4 @@
+require 'yaml'
 require 'maruku'
 require 'haml'
 require 'fileutils'
