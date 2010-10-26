@@ -4,6 +4,11 @@ class Helpers
       instance_variable_set("@#{k.to_s}",v)
     end
   end
+  
+  def render file, attrs
+    Page.new(file, attrs).content
+  end
+  
   def sidebar_menu
     out = '<ul>'
     @menu.each do |m|

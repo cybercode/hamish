@@ -33,7 +33,8 @@ class Page
   private
   def markdown(string)
     string.gsub!(/\{\{\{([^}]+)\}\}\}/) do |v|
-      args = $1.split(/ +/)
+      str = $1
+      args = str =~ /,/ ? str.split(/, */) : str.split(/ +/)
       send(args[0].to_sym, *args[1..-1])
     end
     engine = Maruku.new(string)
