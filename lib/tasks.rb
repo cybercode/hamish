@@ -49,7 +49,7 @@ def clean(destdir)
   end
 end
 
-def copy(task, srcpat, destdir)
+def copy_files(task, srcpat, destdir)
   task_init task, destdir, "Copy #{task.to_s} files to #{destdir}", 
   :dependent_of => :copy
   
