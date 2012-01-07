@@ -11,7 +11,7 @@ def html_with_layout(files, destdir, options={ })
     dest_files_for(files, destdir, 'html').existing
 
   desc 'Generate html with templates ([force] will regenerate all files)'
-  task :html, :force, :needs => files do |t, args|
+  task :html, [:force] => files do |t, args|
     site=Site.new(load(files, destdir), options)
     site.render :force => update_menu(site, options[:cache], args.force)
   end
