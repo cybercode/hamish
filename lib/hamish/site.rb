@@ -56,7 +56,7 @@ module Hamish
     end
 
     def render_page(page)
-      helpers = Helpers.new
+      helpers = Hamish::Helpers.new
       item = menu.select { |i| i[:name] == page.name}[0]
 
       page.attributes.merge(
