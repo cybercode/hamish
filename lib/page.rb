@@ -9,7 +9,7 @@ class Page
   attr_reader :name
   attr_reader :source
   attr_accessor :destination
-  
+
   def initialize(file, attrs = { })
     @source = file
     @name, type = basename file
@@ -29,7 +29,7 @@ class Page
        attributes[meth]
      end
   end
-  
+
   private
   def markdown(string)
     string.gsub!(/\{\{\{([^}]+)\}\}\}/) do |v|
@@ -59,7 +59,7 @@ class Page
   end
 
   def yaml(string)
-    return YAML.load(string)
+    return YAML.load(string)||{}
   end
 
   def basename(file)
@@ -68,11 +68,11 @@ class Page
 
     return [base, ext[1..-1]]
   end
-  
+
   def include(partial, div_class=nil)
     path, base = File.split(partial)
     base = "_#{base}" if path == '.'
-    
+
     data=File.read(File.join(
         (path =~ %r[^/] ? '' : File.dirname(source)),
         path, base + File.extname(source)
